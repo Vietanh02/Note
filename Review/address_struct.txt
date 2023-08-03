@@ -1,0 +1,127 @@
+1. struct in overview
+2. IPv4 struct
+    im sys/types.h library
+    struct in_addr{
+        in_addr_t s_addr
+        /* ipv4 address, network bytes ordered in big endian
+    }
+
+    struct socketadd_in {
+        uint8_t sin_len; # lenght of address struct (16bytes)
+        sa_family_t sin_family; # type of ipv4 address- normally is setted: AF_INET(include all ipv4 address)
+        in_port_t sin_port; #port of address
+        struct in_addr sin_addr; #32 bit address
+        char sin_zero[8]; #not used
+    }
+    EXAMPLE:
+    //using in server.c
+        struct sockaddra_in addr;
+        addr.sin_family = AF_INET;
+        addr.sin_addr.s_addr = IDADDR_ANY;
+        addr.sin_port = htons(9000);
+    //using in client.c
+        struct sockaddr_in addr;
+        addr.sin_family.s_addr = inet_addr("127.0.0.1")
+        addr.sin_port = htons(9090);
+3. IPv6 struct
+    struct sockaddr_in6{
+        SOCKADDR_COMMON (sin6_);
+        in_port_t sin6_port; #Transport layer port
+        uint32_t sin6_flowinfor; #IPv6 flow information
+        struct in6_addr sin6_addr #IPv6 address
+        uint32_t sin6_scope_id; #IPv6 scope_id
+    }
+4. Function convert ip address
+    using <arpa/inet.h> library
+    convert string to 32 bit (IPv4)
+        in_addr_t inet_addr(const char *str)
+        return address in int
+        return -1 on error
+    convert string to IPv4 struct
+        int inet_aton(const char *str, struct in_addr *inp)
+        which is:
+            str: string containt IP address
+            inp: address cos store IP address
+        return  1: success
+                0: error
+    convert IPv4 struct to string
+        char *inet_ntoa(struct in_addr in)
+        which is:   in: IPv4 struct
+        return string containt address
+    convert int IPv4 to string 
+        const char *inet_ntop(int af, const void *cp, char *buf, socklen_t len)
+        which is:
+            af: AF_INET or AF_INET6
+            cp: pointer in_addr or in6_addr
+            buf: string containt addr
+            len: INET_ADDRSTRLEN OR INET6_ADDRSTRLEN
+        return string containt address or NULL if error
+    convert string to in IPv4 (32bit)
+        int inet_pton(int af, const char *cp, void *buf)
+        which is:
+            af: AF_INET or AF_INET6
+            cp: string containt address
+            buf: pointer to in_addr or in6_addr
+        return  1: success
+                0: string not value
+                -1: other error
+5. Convert big-edian <-> little endian 
+    convert 4 bytes little -> big  
+        uint32_t htonl(uint32_t hostlong)
+    convert 2 bytes little -> big
+        uint16_t htons(uint16_t hostshort)
+    
+    convert 4 bytes big -> little
+        uint32_t ntohl(uint32_t netlong)
+    convert 2 bytes big -> ;little
+        uint16_t ntohs(uint16_t netshort)
+
+6. Phan giai ten mien (Translate doiman)
+    int getaddrinfo(const char *nodename, const char *servname, const struct addrinfo *hints, struct addrinfo ** res)
+    which is:
+        nodename: doiman need Translate
+        servname: service or port
+        hints: struct hints
+        res: result
+    return 0: success
+    using gai_strerror() to print error
+    free: freeaddrinfo()
+
+    addrinfor struct:
+        struct addrinfor{
+            int ai_flags; #normally is AI_CANONNAME
+            int ai_family; #normally is AF_INET
+            int ai_socktype; #socket type
+            int ai_protocol; # giao thuc giao van (transport types)
+            socklen_t ai_addrlen; #addr len
+            char *ai_canonname; # doiman name
+            struct sockaddr* ai_addr; #socket address after Translate
+            struct addrinfor* ai_next; #pointer to next addrinfo
+        }
+    Using hints struct to filte result
+        struct addrinfo hints;
+        |-------------------------------|
+        |   hints.ai_family = AF_UNSPEC |
+        |   //IPv6: AF_INET6            |
+        |   //un : AF_UNSPEC            |
+        |   //IPv4: AF_INET             |
+        |-------------------------------|
+        |-----------------------------------|
+        |   hints.ai_socktype = SOCK_STREAM |
+        |   //TCP: SOCK_STREAM              |
+        |   //UDP: SOCK_DGRAM               |
+        |   //un : 0                        |
+        |-----------------------------------|
+        |-----------------------------------|
+        |   hints.ai_protocol = IPPROTO_TCP |
+        |   //TCP: IPPROTO_TCP              |
+        |   //UFP: IPPROTO_UDP              |
+        |   //un : 0                        |
+        |-----------------------------------|
+    EXAMPLE:
+        struct addrinfo *res,*p;
+        int ret = 
+7. Cach xac dinh loi
+    ham errno (nam trong thu vien errno.h)
+    ham strerror(int errnum) return string describle error (string.h)
+    ham perror (const char *s) print string describle recently error (string.h)
