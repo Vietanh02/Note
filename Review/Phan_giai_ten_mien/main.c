@@ -5,9 +5,9 @@
 
 int main(int argc, char *argv[])
 {
-    struct addrinfo *result, *p, hints;
+    struct addrinfo *result, *p, hintss;
 
-    hints.ai_family = AF_INET;
+    hintss.ai_family = AF_INET;
 
     int ret = getaddrinfo(argv[1], "http", &hints, &result);
     if (ret != 0)

@@ -53,8 +53,9 @@ syntax: int accept(int socket_descriptor, struct sockaddr *restrict address, soc
     socket_descriptor: value of the file descriptor return by socket()
     address: variable of the sockaddr_in structure, addressof the socket returned from the function will be stored
     length_of_address: size of address parameter
-cread a new socket from the first connection requests for the specified socket_descriptor and return file descriptor of the new socket.
-the file descriptor of new socket is used in the read() and write() functionto send and receive data form the client node
+Create a new socket from the first connection requests for the specified socket_descriptor
+Return file descriptor of the new socket.
+The file descriptor of new socket is used in the read() and write() functionto send and receive data form the client node
 
 6. Connect 
 send the connection request and connect to the server node
@@ -64,3 +65,64 @@ syntax: int connect(int socket_descriptor,const struct sockaddr *address, sockle
     length_of_address: size of address parameter
 return: 0: success
         -1: err
+
+7. Send
+Function in library sys/socket.h
+send data to client/server (using in both side)
+syntax: ssize_t send( int sockfd, const void *buf, size_t len, int flags)
+     sockfd: socket file descriptor return in accept function
+     buf: buffer store data which need to send
+     len: size of data need to send
+     flags: setting in tranfer data, default is 0
+return the number of bytes is tranfered when success
+return -1 in error
+
+8.Write 
+Function in library unistd.h
+send data to client/server (using in both side)
+syntax: ssize_t write ( int fd, const void *buf, size_t n)
+     fd: socket file descriptor return in accept function
+     buf: buffer store data which need to send
+     n: size of data need to send
+return the number of bytes is tranfered when success
+return -1 in error
+
+
+9. Recv
+Function in library sys/socket.h
+send data to client/server (using in both side)
+syntax: ssize_t recv( int sockfd, const void *buf, size_t len, int flags)
+     sockfd: socket file descriptor return in accept function
+     buf: buffer store data which need to send
+     len: size of data are received
+     flags: setting in received data, default is 0
+return the number of bytes is received when success
+return -1 in error
+
+10. Read
+Function in library unistd.h
+send data to client/server (using in both side)
+syntax: ssize_t read ( int fd, const void *buf, size_t n)
+     fd: socket file descriptor return in accept function
+     buf: buffer store data which is received
+     n: size of data are received
+return the number of bytes is received when success
+return -1 in error
+
+11. close
+Function in library unistd.h
+syntax: int close( int sockfd)
+     sockfd: socket need to close
+return: 0 if success
+        -1 in error
+
+12. shutdown
+Function in library sys/socket.h
+syntax: int shutdown ( int sockfd, int how )
+     sockfd: socket need to close
+     how: value is: SHUT_RD: no receive data
+                    SHUT_WR: no send data
+                    SHUT_RDWR: no receive and send data
+shutdown(fd, SHUT_RDWR) == close (fd)
+return: 0 if success
+        -1 in error
