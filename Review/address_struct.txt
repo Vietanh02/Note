@@ -1,5 +1,5 @@
 1. struct in overview
-new
+
 2. IPv4 struct
     im sys/types.h library
     struct in_addr{
