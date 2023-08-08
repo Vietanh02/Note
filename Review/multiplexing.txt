@@ -1,0 +1,4 @@
+unsing select command to check bahavior of connection
+
+1. select
+working in synchronized mode
